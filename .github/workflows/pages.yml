@@ -4,14 +4,17 @@ on:
     branches: [main]
   workflow_dispatch:
 
+
 permissions:
   contents: read
   pages: write
   id-token: write
 
+
 concurrency:
   group: pages
   cancel-in-progress: false
+
 
 jobs:
   deploy:
@@ -27,6 +30,9 @@ jobs:
           cat portfolio.zip.part-* > portfolio.zip
           echo "41a35c382881012dba58779c00f5a06f4dfcc2f30fe035c4e7efaf4b692a2f50  portfolio.zip" | sha256sum -c -
           unzip -q portfolio.zip -d site
+          if [ -f portfolio-updates.zip ]; then
+            unzip -oq portfolio-updates.zip -d site
+          fi
           test -f site/index.html
       - uses: actions/upload-pages-artifact@v3
         with:
@@ -34,3 +40,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
